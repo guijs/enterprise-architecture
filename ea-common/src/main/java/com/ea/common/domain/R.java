@@ -1,6 +1,7 @@
 package com.ea.common.domain;
 
 import com.ea.common.enums.ResultCode;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -71,6 +72,7 @@ public class R<T> implements Serializable {
         return result;
     }
 
+    @JsonIgnore
     public boolean isSuccess() {
         return this.code == ResultCode.SUCCESS.getCode();
     }

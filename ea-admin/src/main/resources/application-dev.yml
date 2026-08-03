@@ -1,0 +1,30 @@
+# 开发环境：依赖 Docker Compose 中的 MySQL / Redis
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ea_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root123
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 3s
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+          min-idle: 2
+
+ea:
+  cache:
+    type: redis
+  jwt:
+    secret: enterprise-architecture-dev-jwt-secret-key-32bytes!!
+  cors:
+    allowed-origins: "*"
+
+logging:
+  level:
+    com.ea: DEBUG

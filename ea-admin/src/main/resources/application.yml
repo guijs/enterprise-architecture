@@ -1,0 +1,75 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: enterprise-architecture
+  profiles:
+    active: local
+  jackson:
+    time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 50MB
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      id-type: assign_id
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  mapper-locations: classpath*:mapper/**/*.xml
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+
+ea:
+  jwt:
+    secret: enterprise-architecture-jwt-secret-key-change-me-please-32bytes
+    expire-seconds: 7200
+    refresh-threshold-seconds: 1800
+    header: Authorization
+    prefix: "Bearer "
+  security:
+    permit-all:
+      - /auth/login
+      - /auth/register
+      - /api/ping
+      - /actuator/health
+      - /v3/api-docs/**
+      - /swagger-ui/**
+      - /swagger-ui.html
+      - /doc.html
+      - /webjars/**
+      - /error
+      - /h2-console/**
+  cors:
+    allowed-origins: "*"
+
+logging:
+  level:
+    root: INFO
+    com.ea: DEBUG
+    org.springframework.security: INFO

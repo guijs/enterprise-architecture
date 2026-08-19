@@ -2,6 +2,7 @@ package com.company.common.desensitize;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanProperty;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
@@ -32,7 +33,8 @@ public class DesensitizeSerializer extends JsonSerializer<String> implements Con
     }
 
     @Override
-    public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property) {
+    public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property)
+            throws JsonMappingException {
         if (property == null) {
             return this;
         }

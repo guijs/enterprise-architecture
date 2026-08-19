@@ -28,7 +28,7 @@ public class BaseEnumDeserializer extends JsonDeserializer<BaseEnum> implements 
     public BaseEnum deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.getCodec().readTree(p);
         Integer code = resolveCode(node);
-        return BaseEnum.of((Class) enumType, code);
+        return (BaseEnum) BaseEnum.of((Class) enumType, code);
     }
 
     private Integer resolveCode(JsonNode node) {

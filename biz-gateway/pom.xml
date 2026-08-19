@@ -16,9 +16,10 @@
     <description>网关：Token 验证、用户信息解析、路由、限流、CORS（WebFlux 响应式，不引入 servlet 与内部 Starter）</description>
 
     <dependencies>
+        <!-- Spring Cloud 2025.1（Gateway 5.0.x）：旧 spring-cloud-starter-gateway 更名为 server-webflux -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

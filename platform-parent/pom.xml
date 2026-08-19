@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>${spring-boot.version}</version>
+        <version>4.1.0</version>
         <relativePath/>
     </parent>
 
@@ -26,10 +26,10 @@
         <!-- 生态版本（按实际发布版调整） -->
         <spring-boot.version>4.1.0</spring-boot.version>
         <spring-cloud.version>2025.1.0</spring-cloud.version>
-        <spring-cloud-alibaba.version>2023.0.3.2</spring-cloud-alibaba.version>
+        <spring-cloud-alibaba.version>2025.1.0.0</spring-cloud-alibaba.version>
 
         <!-- 第三方组件 -->
-        <mybatis-plus.version>3.5.9</mybatis-plus.version>
+        <mybatis-plus.version>3.5.17</mybatis-plus.version>
         <redisson.version>3.37.0</redisson.version>
         <transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
         <hutool.version>5.8.34</hutool.version>
@@ -65,7 +65,7 @@
             <!-- 第三方组件 -->
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
             <dependency>
@@ -186,6 +186,30 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!--
+                  JDK 23+ 起 javac 默认不再从 classpath 隐式发现注解处理器，
+                  必须显式声明 annotationProcessorPaths，否则 Lombok 不生效。
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
     <profiles>
         <profile>

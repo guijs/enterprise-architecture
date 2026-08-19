@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.company</groupId>
+        <artifactId>platform-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../../platform-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>my-mybatis-starter</artifactId>
+    <name>my-mybatis-starter</name>
+    <description>MyBatis-Plus 插件配置、自动填充、乐观锁、防全表更新、BaseEntity、枚举 TypeHandler</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.company</groupId>
+            <artifactId>my-security-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.company</groupId>
+            <artifactId>my-web-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+        </dependency>
+    </dependencies>
+</project>

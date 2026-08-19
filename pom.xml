@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.company</groupId>
+    <artifactId>company-platform</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>company-platform</name>
+    <description>企业级 Spring Boot 微服务平台（聚合根）</description>
+
+    <!--
+      聚合根：仅负责 reactor 构建顺序，本身不作为其它模块的 <parent>。
+      各模块统一继承 platform-parent。
+    -->
+    <modules>
+        <module>platform-parent</module>
+        <module>platform-starters</module>
+        <module>biz-gateway</module>
+        <module>biz-web</module>
+        <module>biz-service</module>
+    </modules>
+</project>

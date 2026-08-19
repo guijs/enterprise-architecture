@@ -1,0 +1,3 @@
+com.company.web.WebAutoConfiguration
+com.company.web.doc.DocAutoConfiguration
+com.company.web.feign.FeignAutoConfiguration

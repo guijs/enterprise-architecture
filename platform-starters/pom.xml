@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.company</groupId>
+        <artifactId>platform-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../platform-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>platform-starters</artifactId>
+    <packaging>pom</packaging>
+    <name>platform-starters</name>
+    <description>基础设施 Starter 聚合模块</description>
+
+    <!--
+      骨架说明：为保持结构清晰，每个 Starter 采用「单模块」形式承载 autoconfigure 逻辑，
+      并通过 META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports 注册，
+      不使用 @ComponentScan（见 8. Starter 开发规范）。
+      如需严格拆分 autoconfigure / starter 空壳两层，可在此基础上再拆子模块。
+    -->
+    <modules>
+        <module>my-security-starter</module>
+        <module>my-web-starter</module>
+        <module>my-log-starter</module>
+        <module>my-crypto-starter</module>
+        <module>my-lock-starter</module>
+        <module>my-ratelimit-starter</module>
+        <module>my-idempotent-starter</module>
+        <module>my-id-starter</module>
+        <module>my-rabbit-starter</module>
+        <module>my-redis-starter</module>
+        <module>my-mybatis-starter</module>
+    </modules>
+</project>

@@ -30,6 +30,18 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <!--
+          Spring Boot 4 默认改用 Jackson 3（tools.jackson.*）。
+          本骨架沿用文档中的 Jackson 2 写法（com.fasterxml.jackson.*、Jackson2ObjectMapperBuilderCustomizer），
+          因此引入官方 Jackson 2 兼容模块；该模块提供移动到
+          org.springframework.boot.jackson2.autoconfigure 的 Jackson2ObjectMapperBuilderCustomizer。
+          如后续迁移到 Jackson 3，可移除本依赖并改用 JsonMapperBuilderCustomizer + tools.jackson.* API。
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-jackson2</artifactId>
+        </dependency>
+
         <!-- 可选：Feign ErrorDecoder（引入方使用 OpenFeign 时才装配） -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

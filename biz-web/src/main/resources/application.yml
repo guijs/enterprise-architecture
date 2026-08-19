@@ -1,0 +1,92 @@
+spring:
+  application:
+    name: biz-web
+  profiles:
+    active: @profiles.active@
+  threads:
+    virtual:
+      enabled: true
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_ADDR:nacos:8848}
+      config:
+        server-addr: ${NACOS_ADDR:nacos:8848}
+        file-extension: yaml
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
+server:
+  port: 8080
+  shutdown: graceful
+  servlet:
+    context-path: /api
+
+jasypt:
+  encryptor:
+    password: ${JASYPT_PASSWORD:}
+    algorithm: PBEWITHHMACSHA512ANDAES_256
+
+springdoc:
+  enabled: true
+  version: 1.0.0
+  contact-name: 研发团队
+
+my:
+  log:
+    controller:
+      enabled: true
+      log-request: true
+      log-response: false
+      max-body-length: 2048
+      ignore-params:
+        - password
+        - token
+      exclude-paths:
+        - /actuator/**
+        - /v3/api-docs/**
+    feign:
+      enabled: true
+      log-request: true
+      log-response: true
+      max-body-length: 2048
+      ignore-params:
+        - password
+        - token
+    operation:
+      enabled: true
+      async: true
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        failure-rate-threshold: 50
+        slow-call-rate-threshold: 80
+        slow-call-duration-threshold: 2s
+        wait-duration-in-open-state: 10s
+        sliding-window-size: 10
+        permitted-number-of-calls-in-half-open-state: 5
+        ignore-exceptions:
+          - com.company.common.exception.BizException
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 3s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus, metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}

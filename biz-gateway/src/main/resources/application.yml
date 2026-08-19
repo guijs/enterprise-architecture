@@ -1,0 +1,37 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: biz-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_ADDR:nacos:8848}
+      config:
+        server-addr: ${NACOS_ADDR:nacos:8848}
+        file-extension: yaml
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      routes:
+        - id: biz-web
+          uri: lb://biz-web
+          predicates:
+            - Path=/api/biz/**
+          filters:
+            - StripPrefix=1
+
+# CORS 白名单（生产从配置中心下发，禁止通配）
+gateway:
+  cors:
+    allowed-origins:
+      - https://admin.company.com
+      - https://app.company.com
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus

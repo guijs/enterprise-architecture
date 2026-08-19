@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: biz-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: biz-web
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0        # 滚动期间可用副本数不下降
+  template:
+    metadata:
+      labels:
+        app: biz-web
+    spec:
+      containers:
+        - name: biz-web
+          image: registry.company.com/biz-web:1.0.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+            - name: JASYPT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: biz-secret
+                  key: jasypt
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+          readinessProbe:
+            httpGet:
+              path: /api/actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 10
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 15"]   # 见 6.17 摘流
+      terminationGracePeriodSeconds: 60

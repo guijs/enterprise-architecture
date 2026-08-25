@@ -39,10 +39,6 @@
         </dependency>
         <dependency>
             <groupId>com.company</groupId>
-            <artifactId>my-lock-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.company</groupId>
             <artifactId>my-log-starter</artifactId>
         </dependency>
 

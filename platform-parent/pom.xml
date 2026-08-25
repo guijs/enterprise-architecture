@@ -137,16 +137,6 @@
             </dependency>
             <dependency>
                 <groupId>com.company</groupId>
-                <artifactId>my-lock-starter</artifactId>
-                <version>${platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.company</groupId>
-                <artifactId>my-ratelimit-starter</artifactId>
-                <version>${platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.company</groupId>
                 <artifactId>my-idempotent-starter</artifactId>
                 <version>${platform.version}</version>
             </dependency>

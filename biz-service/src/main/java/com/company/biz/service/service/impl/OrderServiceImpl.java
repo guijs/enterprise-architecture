@@ -8,18 +8,22 @@ import com.company.common.exception.OrderErrorCode;
 import com.company.biz.service.service.OrderService;
 import com.company.common.exception.BizException;
 import com.company.lock.DistributedLock;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 /**
  * 订单服务实现（骨架）：演示分布式锁、业务异常、指标埋点。
  */
 @Service
-@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderMapper orderMapper;
     private final OrderMetrics orderMetrics;
+
+    public OrderServiceImpl(OrderMapper orderMapper, ObjectProvider<OrderMetrics> orderMetricsProvider) {
+        this.orderMapper = orderMapper;
+        this.orderMetrics = orderMetricsProvider.getIfAvailable();
+    }
 
     @Override
     public OrderEntity getById(Long id) {
@@ -35,7 +39,9 @@ public class OrderServiceImpl implements OrderService {
     public Long create(OrderEntity order) {
         order.setStatus(OrderStatus.PENDING);
         orderMapper.insert(order);
-        orderMetrics.countCreated("api");
+        if (orderMetrics != null) {
+            orderMetrics.countCreated("api");
+        }
         return order.getId();
     }
 }

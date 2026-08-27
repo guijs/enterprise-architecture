@@ -1,0 +1,29 @@
+# Local profile: Nacos disabled, explicit URI routing
+# Usage: --spring.profiles.active=local
+spring:
+  cloud:
+    compatibility-verifier:
+      enabled: false
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+        import-check:
+          enabled: false
+    gateway:
+      server:
+        webflux:
+          # Path contract: /api/** → biz-web (no StripPrefix, web context-path=/api)
+          routes:
+            - id: biz-web
+              uri: http://127.0.0.1:8080
+              predicates:
+                - Path=/api/**
+
+# CORS for local development (allow localhost)
+gateway:
+  cors:
+    allowed-origins:
+      - http://localhost:3000
+      - http://127.0.0.1:3000

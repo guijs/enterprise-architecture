@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: biz-gateway
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   cloud:
     nacos:
       discovery:
@@ -12,16 +14,15 @@ spring:
         server-addr: ${NACOS_ADDR:nacos:8848}
         file-extension: yaml
     gateway:
-      discovery:
-        locator:
-          enabled: false
-      routes:
-        - id: biz-web
-          uri: lb://biz-web
-          predicates:
-            - Path=/api/biz/**
-          filters:
-            - StripPrefix=1
+      server:
+        webflux:
+          routes:
+            # Path contract: /api/** → biz-web WITHOUT StripPrefix
+            # biz-web has context-path=/api, so /api/orders arrives as /api/orders
+            - id: biz-web
+              uri: lb://biz-web
+              predicates:
+                - Path=/api/**
 
 # CORS 白名单（生产从配置中心下发，禁止通配）
 gateway:
@@ -29,6 +30,10 @@ gateway:
     allowed-origins:
       - https://admin.company.com
       - https://app.company.com
+  jwt:
+    # 生产环境必须通过 JWT_SECRET 环境变量配置强密钥（至少32字符）
+    secret: ${JWT_SECRET:local-dev-jwt-secret-change-in-prod-must-be-at-least-32-chars}
+    access-token-expire-minutes: 30
 
 management:
   endpoints:

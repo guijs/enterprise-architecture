@@ -5,16 +5,14 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 /**
- * 跨服务传输对象（biz-service 内部接口返回）。
+ * 创建订单请求 DTO（跨服务传输对象）。
  */
 @Data
-public class OrderDTO {
+public class OrderCreateDTO {
 
-    private Long id;
     private String orderNo;
     private Long skuId;
     private Integer quantity;
     private BigDecimal amount;
-    /** OrderStatus enum name (e.g. "PENDING", "PAID", "CLOSED", "REFUNDED") */
-    private String status;
+    private String buyerName;
 }

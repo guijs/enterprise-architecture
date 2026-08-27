@@ -2,9 +2,11 @@ package com.company.biz.web.controller;
 
 import com.company.biz.web.dto.OrderCreateReq;
 import com.company.biz.web.feign.BizServiceFeignClient;
+import com.company.biz.web.feign.OrderCreateDTO;
 import com.company.biz.web.feign.OrderDTO;
 import com.company.biz.web.vo.OrderVO;
 import com.company.common.exception.BizException;
+import com.company.common.exception.CommonErrorCode;
 import com.company.common.page.PageQuery;
 import com.company.common.page.PageResult;
 import com.company.common.response.Result;
@@ -13,6 +15,7 @@ import com.company.log.annotation.LogSwitch;
 import com.company.log.annotation.OperationLog;
 import com.company.log.annotation.RequestLog;
 import com.company.ratelimit.RateLimit;
+import com.company.security.UserContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,7 +27,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -44,7 +49,7 @@ public class OrderController {
     public Result<OrderDTO> detail(@PathVariable Long id) {
         Result<OrderDTO> result = bizServiceFeignClient.getOrder(id);
         if (result == null || !result.isSuccess()) {
-            throw new BizException(com.company.common.exception.CommonErrorCode.SYSTEM_ERROR);
+            throw new BizException(CommonErrorCode.SYSTEM_ERROR);
         }
         return result;
     }
@@ -53,16 +58,27 @@ public class OrderController {
     @Operation(summary = "创建订单")
     @RateLimit(limit = 10, window = 1, timeUnit = TimeUnit.MINUTES, message = "操作过于频繁")
     @Idempotent(key = "#req.orderNo", cacheResult = true)
-    @OperationLog(module = "订单", type = "CREATE", content = "创建订单：#{#req.orderNo}")
+    @OperationLog(module = "订单", type = "CREATE", content = "创建订单: #{#req.orderNo}")
     @RequestLog(response = LogSwitch.ON)
     public Result<Long> create(@RequestBody @Valid OrderCreateReq req) {
-        // 骨架：实际下单逻辑委托给 Service / 下游服务
-        return Result.ok(System.currentTimeMillis());
+        OrderCreateDTO createDTO = new OrderCreateDTO();
+        createDTO.setOrderNo(req.getOrderNo() != null ? req.getOrderNo() : UUID.randomUUID().toString().replace("-", ""));
+        createDTO.setSkuId(req.getSkuId());
+        createDTO.setQuantity(req.getQuantity());
+        createDTO.setAmount(BigDecimal.valueOf(req.getQuantity() * 100L));
+        createDTO.setBuyerName(UserContext.getUserName());
+
+        Result<Long> result = bizServiceFeignClient.createOrder(createDTO);
+        if (result == null || !result.isSuccess()) {
+            throw new BizException(CommonErrorCode.SYSTEM_ERROR);
+        }
+        return result;
     }
 
     @GetMapping
     @Operation(summary = "订单分页")
     public Result<PageResult<OrderVO>> page(@Valid PageQuery query) {
+        // TODO: 实现分页查询，调用 service 分页接口
         return Result.ok(new PageResult<>(List.of(), 0, query.getPageNum(), query.getPageSize()));
     }
 }

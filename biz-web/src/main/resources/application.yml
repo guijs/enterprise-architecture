@@ -60,6 +60,10 @@ my:
       enabled: true
       async: true
 
+biz:
+  service:
+    url: ${BIZ_SERVICE_URL:}
+
 resilience4j:
   circuitbreaker:
     configs:

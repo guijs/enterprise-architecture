@@ -1,6 +1,5 @@
 package com.company.common.page;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +9,8 @@ import java.util.List;
 
 /**
  * 统一分页出参：禁止各服务自定义 {list, count} 字段名。
+ * <p>
+ * IPage 转换请使用 {@code com.company.mybatis.PageResults.of(IPage)} (my-mybatis-starter)。
  */
 @Data
 @AllArgsConstructor
@@ -20,11 +21,6 @@ public class PageResult<T> implements Serializable {
     private long total;
     private long pageNum;
     private long pageSize;
-
-    /** 由 MyBatis-Plus IPage 转换（引入方存在 mybatis-plus 时可用）。 */
-    public static <T> PageResult<T> of(IPage<T> page) {
-        return new PageResult<>(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
-    }
 
     public long getPages() {
         if (pageSize <= 0) {

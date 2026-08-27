@@ -15,5 +15,6 @@ public class OrderDTO {
     private Long skuId;
     private Integer quantity;
     private BigDecimal amount;
-    private Integer status;
+    /** OrderStatus enum name (e.g. "PENDING", "PAID", "CLOSED", "REFUNDED") */
+    private String status;
 }

@@ -4,18 +4,18 @@ import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
- * Redisson 配置：兼容 Spring Boot 4.1（DataRedisProperties）。
- * redisson-spring-boot-starter 3.37.0 的 auto-config 绑定 Boot 3 RedisProperties，
- * 在 Boot 4.1 中会失败，故此处提供自定义配置。
+ * Redisson 自动配置：兼容 Spring Boot 4.1。
+ * 不使用 redisson-spring-boot-starter（其 auto-config 引用已删除的 RedisProperties）。
+ * 直接读取 spring.data.redis.* 属性配置 Redisson 单节点连接。
  */
-@Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = "spring.data.redis", name = "host")
+@AutoConfiguration
+@ConditionalOnClass(RedissonClient.class)
 public class RedissonConfig {
 
     @Value("${spring.data.redis.host:localhost}")

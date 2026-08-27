@@ -23,6 +23,19 @@
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
+            <exclusions>
+                <!-- Exclude broken Boot 3 auto-config; we provide our own Boot 4 compatible config -->
+                <exclusion>
+                    <groupId>org.redisson</groupId>
+                    <artifactId>redisson-spring-data-35</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- Use Redisson core directly with our custom config -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.37.0</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

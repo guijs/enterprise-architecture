@@ -2,6 +2,8 @@
 # Usage: --spring.profiles.active=local
 spring:
   cloud:
+    compatibility-verifier:
+      enabled: false
     nacos:
       discovery:
         enabled: false

@@ -46,16 +46,13 @@ mvn -DskipTests package
 
 ```bash
 # 1. 启动 biz-service (8081)
-cd biz-service
-java -jar target/biz-service.jar --spring.profiles.active=local
+java -jar biz-service/target/biz-service.jar --spring.profiles.active=local
 
 # 2. 启动 biz-web (8080)
-cd biz-web
-java -jar target/biz-web.jar --spring.profiles.active=local
+java -jar biz-web/target/biz-web.jar --spring.profiles.active=local
 
 # 3. 启动 biz-gateway (9000)
-cd biz-gateway
-java -jar target/biz-gateway.jar --spring.profiles.active=local
+java -jar biz-gateway/target/biz-gateway.jar --spring.profiles.active=local
 ```
 
 或者使用 Maven 插件：

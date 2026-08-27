@@ -14,16 +14,15 @@ spring:
         server-addr: ${NACOS_ADDR:nacos:8848}
         file-extension: yaml
     gateway:
-      discovery:
-        locator:
-          enabled: false
-      routes:
-        # /api/** forwarded to biz-web WITHOUT StripPrefix
-        # biz-web has context-path=/api, so /api/orders arrives as /api/orders
-        - id: biz-web
-          uri: lb://biz-web
-          predicates:
-            - Path=/api/**
+      server:
+        webflux:
+          routes:
+            # Path contract: /api/** → biz-web WITHOUT StripPrefix
+            # biz-web has context-path=/api, so /api/orders arrives as /api/orders
+            - id: biz-web
+              uri: lb://biz-web
+              predicates:
+                - Path=/api/**
 
 # CORS 白名单（生产从配置中心下发，禁止通配）
 gateway:

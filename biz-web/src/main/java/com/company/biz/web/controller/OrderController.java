@@ -58,7 +58,7 @@ public class OrderController {
     @Operation(summary = "创建订单")
     @RateLimit(limit = 10, window = 1, timeUnit = TimeUnit.MINUTES, message = "操作过于频繁")
     @Idempotent(key = "#req.orderNo", cacheResult = true)
-    @OperationLog(module = "订单", type = "CREATE", content = "创建订单：#{#req.orderNo}")
+    @OperationLog(module = "订单", type = "CREATE", content = "创建订单: #{#req.orderNo}")
     @RequestLog(response = LogSwitch.ON)
     public Result<Long> create(@RequestBody @Valid OrderCreateReq req) {
         OrderCreateDTO createDTO = new OrderCreateDTO();

@@ -2,6 +2,8 @@
 # Usage: --spring.profiles.active=local
 spring:
   cloud:
+    compatibility-verifier:
+      enabled: false
     nacos:
       discovery:
         enabled: false
@@ -10,12 +12,14 @@ spring:
         import-check:
           enabled: false
     gateway:
-      # Path contract: /api/** → biz-web (no StripPrefix, web context-path=/api)
-      routes:
-        - id: biz-web
-          uri: http://127.0.0.1:8080
-          predicates:
-            - Path=/api/**
+      server:
+        webflux:
+          # Path contract: /api/** → biz-web (no StripPrefix, web context-path=/api)
+          routes:
+            - id: biz-web
+              uri: http://127.0.0.1:8080
+              predicates:
+                - Path=/api/**
 
 # CORS for local development (allow localhost)
 gateway:

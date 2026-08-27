@@ -15,7 +15,7 @@ import java.math.BigDecimal;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("biz_order")
+@TableName(value = "biz_order", autoResultMap = true)
 public class OrderEntity extends BaseEntity {
 
     private String orderNo;

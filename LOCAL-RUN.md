@@ -140,6 +140,24 @@ curl -v http://localhost:9000/api/orders
 |--------|------|--------|
 | admin | admin123 | 1 |
 
+## API 文档 (Swagger/OpenAPI)
+
+biz-web 使用 springdoc + knife4j，以下路径无需认证即可访问：
+
+| 路径 | 说明 |
+|------|------|
+| http://localhost:9000/api/doc.html | Knife4j UI（推荐） |
+| http://localhost:9000/api/swagger-ui/index.html | Swagger UI |
+| http://localhost:9000/api/v3/api-docs | OpenAPI JSON |
+
+直接访问 biz-web（跳过 gateway）：
+
+| 路径 | 说明 |
+|------|------|
+| http://localhost:8080/api/doc.html | Knife4j UI |
+| http://localhost:8080/api/swagger-ui/index.html | Swagger UI |
+| http://localhost:8080/api/v3/api-docs | OpenAPI JSON |
+
 ## 关闭服务
 
 ```bash

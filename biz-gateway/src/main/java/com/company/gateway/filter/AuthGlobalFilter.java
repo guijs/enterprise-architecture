@@ -27,7 +27,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthGlobalFilter implements GlobalFilter, Ordered {
 
-    private static final List<String> WHITE_LIST = List.of("/auth/login", "/auth/refresh", "/actuator/health");
+    private static final List<String> WHITE_LIST = List.of(
+            "/auth/login",
+            "/auth/refresh",
+            "/actuator/health",
+            // Swagger/OpenAPI docs (springdoc + knife4j) - allow unauthenticated access for local/dev
+            "/api/swagger-ui",
+            "/api/v3/api-docs",
+            "/api/doc.html",
+            "/api/webjars"
+    );
 
     private final TokenService tokenService;
 

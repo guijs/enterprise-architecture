@@ -27,7 +27,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthGlobalFilter implements GlobalFilter, Ordered {
 
-    private static final List<String> WHITE_LIST = List.of("/auth/login", "/auth/refresh");
+    private static final List<String> WHITE_LIST = List.of("/auth/login", "/auth/refresh", "/actuator/health");
 
     private final TokenService tokenService;
 

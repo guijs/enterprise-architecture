@@ -1,1 +1,2 @@
 com.company.security.SecurityAutoConfiguration
+com.company.security.FeignSecurityAutoConfiguration

@@ -4,7 +4,7 @@ import com.company.biz.service.entity.OrderEntity;
 import com.company.biz.service.enums.OrderStatus;
 import com.company.biz.service.mapper.OrderMapper;
 import com.company.biz.service.metrics.OrderMetrics;
-import com.company.biz.service.exception.OrderErrorCode;
+import com.company.common.exception.OrderErrorCode;
 import com.company.biz.service.service.OrderService;
 import com.company.common.exception.BizException;
 import com.company.lock.DistributedLock;

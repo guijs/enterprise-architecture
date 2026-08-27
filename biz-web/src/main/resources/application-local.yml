@@ -1,0 +1,38 @@
+# Local profile: Nacos disabled, explicit Feign URL
+# Usage: --spring.profiles.active=local
+spring:
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 10
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 2000ms
+          multiplier: 2.0
+          max-interval: 10000ms
+
+# Feign: explicit URL for biz-service (no service discovery)
+spring.cloud.openfeign.client.config.biz-service.url: http://127.0.0.1:8081
+
+springdoc:
+  enabled: true

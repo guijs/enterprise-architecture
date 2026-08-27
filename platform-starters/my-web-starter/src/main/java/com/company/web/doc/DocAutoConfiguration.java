@@ -38,7 +38,7 @@ public class DocAutoConfiguration {
     public GroupedOpenApi defaultApi() {
         return GroupedOpenApi.builder()
                 .group("default")
-                .pathsToMatch("/api/**")
+                .pathsToMatch("/**")
                 .build();
     }
 }

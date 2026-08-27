@@ -7,6 +7,8 @@ spring:
         enabled: false
       config:
         enabled: false
+        import-check:
+          enabled: false
   data:
     redis:
       host: localhost
@@ -32,7 +34,9 @@ spring:
           max-interval: 10000ms
 
 # Feign: explicit URL for biz-service (no service discovery)
-spring.cloud.openfeign.client.config.biz-service.url: http://127.0.0.1:8081
+biz:
+  service:
+    url: http://127.0.0.1:8081
 
 springdoc:
   enabled: true

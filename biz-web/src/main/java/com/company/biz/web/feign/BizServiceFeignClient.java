@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  *
  * 路径契约：biz-service context-path=/api，因此 Feign 调用必须包含 /api 前缀。
  */
-@FeignClient(name = "biz-service", fallbackFactory = BizServiceFallbackFactory.class)
+@FeignClient(name = "biz-service", url = "${biz.service.url:}", fallbackFactory = BizServiceFallbackFactory.class)
 @FeignLog(response = LogSwitch.ON)
 public interface BizServiceFeignClient {
 

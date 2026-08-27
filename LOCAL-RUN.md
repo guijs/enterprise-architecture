@@ -30,7 +30,7 @@ docker compose up -d
 ```
 
 这将启动：
-- MySQL 8 (3306) - 数据库 biz_db，用户 biz_user/biz_pass
+- MySQL 8 (3306) - 数据库 biz_db，用户 root/root
 - Redis 7 (6379)
 - RabbitMQ 3 (5672, 管理界面 15672)
 

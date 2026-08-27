@@ -19,9 +19,8 @@
     <description>公司级父 POM：锁定 Spring 生态与第三方组件版本，统一全局依赖</description>
 
     <properties>
-        <!-- Adjusted for available JDK; original target is JDK 25 -->
-        <java.version>21</java.version>
-        <maven.compiler.release>21</maven.compiler.release>
+        <java.version>25</java.version>
+        <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- 生态版本（按实际发布版调整） -->

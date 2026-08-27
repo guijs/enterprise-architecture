@@ -8,6 +8,7 @@ import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.company.common.page.PageQuery;
 import com.company.common.page.PageResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @Repository
 @RequiredArgsConstructor
+@ConditionalOnBean(ElasticsearchClient.class)
 public class OrderSearchRepository {
 
     private final ElasticsearchClient client;

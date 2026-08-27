@@ -7,10 +7,12 @@ spring:
         enabled: false
       config:
         enabled: false
+        import-check:
+          enabled: false
   datasource:
     url: jdbc:mysql://localhost:3306/biz_db?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: biz_user
-    password: biz_pass
+    username: root
+    password: root
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
@@ -45,9 +47,7 @@ spring:
 
 # Elasticsearch disabled for local smoke path
 es:
-  host: localhost
-  port: 9200
-  scheme: http
+  enabled: false
 
 mybatis-plus:
   configuration:

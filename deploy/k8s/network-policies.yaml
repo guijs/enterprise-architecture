@@ -1,0 +1,223 @@
+# NetworkPolicy for security isolation
+# Architecture: Ingress → Gateway → Web → Service
+# - Only Ingress/external can reach Gateway
+# - Only Gateway can reach Web
+# - Only Web can reach Service
+# - /internal/** paths are NOT exposed via Ingress (enforced by not creating Ingress rules for service)
+
+---
+# Gateway NetworkPolicy: allow ingress from anywhere (Ingress controller)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: biz-gateway-policy
+  labels:
+    app: biz-gateway
+spec:
+  podSelector:
+    matchLabels:
+      app: biz-gateway
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow traffic from Ingress controller (typically labeled ingress-nginx or similar)
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+    # Allow health checks from kubelet
+    - ports:
+        - port: 9000
+          protocol: TCP
+  egress:
+    # Allow outbound to biz-web only
+    - to:
+        - podSelector:
+            matchLabels:
+              app: biz-web
+      ports:
+        - port: 8080
+          protocol: TCP
+    # Allow DNS resolution
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # Allow Nacos discovery/config
+    - to:
+        - podSelector:
+            matchLabels:
+              app: nacos
+      ports:
+        - port: 8848
+          protocol: TCP
+
+---
+# Web NetworkPolicy: only allow ingress from Gateway
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: biz-web-policy
+  labels:
+    app: biz-web
+spec:
+  podSelector:
+    matchLabels:
+      app: biz-web
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Only allow traffic from biz-gateway
+    - from:
+        - podSelector:
+            matchLabels:
+              app: biz-gateway
+      ports:
+        - port: 8080
+          protocol: TCP
+  egress:
+    # Allow outbound to biz-service only
+    - to:
+        - podSelector:
+            matchLabels:
+              app: biz-service
+      ports:
+        - port: 8081
+          protocol: TCP
+    # Allow DNS resolution
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # Allow Redis access
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - port: 6379
+          protocol: TCP
+    # Allow RabbitMQ access
+    - to:
+        - podSelector:
+            matchLabels:
+              app: rabbitmq
+      ports:
+        - port: 5672
+          protocol: TCP
+    # Allow Nacos discovery/config
+    - to:
+        - podSelector:
+            matchLabels:
+              app: nacos
+      ports:
+        - port: 8848
+          protocol: TCP
+
+---
+# Service NetworkPolicy: only allow ingress from Web
+# This is the critical policy that ensures /internal/** is NOT accessible from outside
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: biz-service-policy
+  labels:
+    app: biz-service
+spec:
+  podSelector:
+    matchLabels:
+      app: biz-service
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # ONLY allow traffic from biz-web - this ensures /internal/** cannot be reached externally
+    - from:
+        - podSelector:
+            matchLabels:
+              app: biz-web
+      ports:
+        - port: 8081
+          protocol: TCP
+  egress:
+    # Allow DNS resolution
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # Allow MySQL access
+    - to:
+        - podSelector:
+            matchLabels:
+              app: mysql
+      ports:
+        - port: 3306
+          protocol: TCP
+    # Allow Redis access
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - port: 6379
+          protocol: TCP
+    # Allow RabbitMQ access
+    - to:
+        - podSelector:
+            matchLabels:
+              app: rabbitmq
+      ports:
+        - port: 5672
+          protocol: TCP
+    # Allow Elasticsearch access
+    - to:
+        - podSelector:
+            matchLabels:
+              app: elasticsearch
+      ports:
+        - port: 9200
+          protocol: TCP
+    # Allow Nacos discovery/config
+    - to:
+        - podSelector:
+            matchLabels:
+              app: nacos
+      ports:
+        - port: 8848
+          protocol: TCP
+
+---
+# Default deny policy for the namespace (defense in depth)
+# Uncomment if you want to enforce deny-by-default for all pods without explicit policies
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: default-deny-all
+# spec:
+#   podSelector: {}
+#   policyTypes:
+#     - Ingress
+#     - Egress

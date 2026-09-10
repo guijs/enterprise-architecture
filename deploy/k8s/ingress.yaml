@@ -1,0 +1,33 @@
+# Ingress configuration for biz-gateway
+# SECURITY: Only gateway is exposed externally. biz-service /internal/** paths
+# are NOT accessible from outside the cluster - enforced by:
+# 1. No Ingress rules for biz-service
+# 2. NetworkPolicy restricting biz-service ingress to biz-web only
+# 3. Internal token validation on /internal/** endpoints
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: biz-gateway-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+spec:
+  tls:
+    - hosts:
+        - api.company.com
+      secretName: api-tls-secret
+  rules:
+    - host: api.company.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: biz-gateway
+                port:
+                  number: 9000

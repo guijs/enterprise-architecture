@@ -2,10 +2,15 @@ package com.company.biz.service.controller;
 
 import com.company.biz.service.entity.OrderEntity;
 import com.company.biz.service.service.OrderService;
+import com.company.common.page.PageQuery;
+import com.company.common.page.PageResult;
 import com.company.common.response.Result;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,5 +27,20 @@ public class OrderInternalController {
     @GetMapping("/{id}")
     public Result<OrderEntity> getOrder(@PathVariable Long id) {
         return Result.ok(orderService.getById(id));
+    }
+
+    @PostMapping
+    public Result<Long> createOrder(@RequestBody @Valid OrderCreateCmd cmd) {
+        OrderEntity order = new OrderEntity();
+        order.setOrderNo(cmd.getOrderNo());
+        order.setSkuId(cmd.getSkuId());
+        order.setQuantity(cmd.getQuantity());
+        order.setAmount(cmd.getAmount());
+        return Result.ok(orderService.create(order));
+    }
+
+    @GetMapping
+    public Result<PageResult<OrderEntity>> page(@Valid PageQuery query) {
+        return Result.ok(orderService.page(query));
     }
 }

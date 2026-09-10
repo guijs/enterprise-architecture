@@ -29,5 +29,7 @@ public class OrderEntity extends BaseEntity {
     @TableField(typeHandler = BaseEnumTypeHandler.class)
     private OrderStatus status;
 
+    private Long buyerId;
+
     private String buyerName;
 }

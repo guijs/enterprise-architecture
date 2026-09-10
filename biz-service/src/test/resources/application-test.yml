@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: biz-service
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  sql:
+    init:
+      mode: always
+  flyway:
+    enabled: false
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+
+server:
+  port: 0
+
+my:
+  crypto:
+    algorithm: AES_GCM
+    secret-key: 0123456789abcdef0123456789abcdef
+    hash-salt: test-salt
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.company: DEBUG

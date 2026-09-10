@@ -16,4 +16,6 @@ public class OrderDTO {
     private Integer quantity;
     private BigDecimal amount;
     private Integer status;
+    private Long buyerId;
+    private String buyerName;
 }

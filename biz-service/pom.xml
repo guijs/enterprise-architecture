@@ -23,6 +23,10 @@
         </dependency>
         <dependency>
             <groupId>com.company</groupId>
+            <artifactId>my-security-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.company</groupId>
             <artifactId>my-crypto-starter</artifactId>
         </dependency>
         <dependency>
@@ -74,6 +78,13 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

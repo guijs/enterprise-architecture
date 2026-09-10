@@ -5,8 +5,6 @@ import com.company.biz.web.feign.BizServiceFeignClient;
 import com.company.biz.web.feign.OrderCreateDTO;
 import com.company.biz.web.feign.OrderDTO;
 import com.company.biz.web.vo.OrderVO;
-import com.company.common.exception.BizException;
-import com.company.common.exception.CommonErrorCode;
 import com.company.common.page.PageQuery;
 import com.company.common.page.PageResult;
 import com.company.common.response.Result;
@@ -34,6 +32,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 订单接口示例：串联限流、幂等、审计、接口日志与 Feign 调用。
+ * 
+ * 错误处理约定：
+ * - 业务错误（如订单不存在）：下游返回 HTTP 4xx + Result，Feign ErrorDecoder 还原为 BizException
+ * - 基础设施故障（超时/熔断）：Fallback 抛出 SERVICE_UNAVAILABLE
+ * - 不再手动判断 result.isSuccess()，避免把下游业务错误覆盖为 SYSTEM_ERROR
  */
 @RestController
 @RequestMapping("/orders")
@@ -47,11 +50,8 @@ public class OrderController {
     @GetMapping("/{id}")
     @Operation(summary = "订单详情")
     public Result<OrderDTO> detail(@PathVariable Long id) {
-        Result<OrderDTO> result = bizServiceFeignClient.getOrder(id);
-        if (result == null || !result.isSuccess()) {
-            throw new BizException(CommonErrorCode.SYSTEM_ERROR);
-        }
-        return result;
+        // 业务错误由 ErrorDecoder 还原为 BizException，基础设施故障走 Fallback
+        return bizServiceFeignClient.getOrder(id);
     }
 
     @PostMapping
@@ -68,11 +68,8 @@ public class OrderController {
         createDTO.setAmount(BigDecimal.valueOf(req.getQuantity() * 100L));
         createDTO.setBuyerName(UserContext.getUserName());
 
-        Result<Long> result = bizServiceFeignClient.createOrder(createDTO);
-        if (result == null || !result.isSuccess()) {
-            throw new BizException(CommonErrorCode.SYSTEM_ERROR);
-        }
-        return result;
+        // 业务错误由 ErrorDecoder 还原为 BizException，基础设施故障走 Fallback
+        return bizServiceFeignClient.createOrder(createDTO);
     }
 
     @GetMapping

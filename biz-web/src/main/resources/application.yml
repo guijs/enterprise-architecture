@@ -64,6 +64,15 @@ biz:
   service:
     url: ${BIZ_SERVICE_URL:}
 
+# 内部接口安全配置：Feign 调用 biz-service /internal/** 时自动携带 token
+# 环境变量：INTERNAL_TOKEN - biz-web 和 biz-service 必须配置相同的值
+# 安全：非 local/dev/test profile 缺少 token 配置时启动失败（fail-fast）
+security:
+  internal:
+    enabled: false
+    token: ${INTERNAL_TOKEN:}
+    header-name: X-Internal-Token
+
 resilience4j:
   circuitbreaker:
     configs:

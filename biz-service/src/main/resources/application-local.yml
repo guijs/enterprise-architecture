@@ -54,3 +54,8 @@ es:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+# 本地开发：使用固定的内部 token 方便调试
+security:
+  internal:
+    token: local-internal-token-for-dev

@@ -1,12 +1,12 @@
-package com.company.biz.web.feign;
+package com.company.biz.service.dto;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 /**
- * 跨服务传输对象（biz-service 内部接口返回）。
- * 与 biz-service OrderDTO 同构，避免 Entity 泄露至调用方。
+ * 订单 DTO：用于内部接口返回，与 Feign 客户端 OrderDTO 同构。
+ * 不暴露 Entity 内部细节（如 createdAt、updatedAt、version、deleted 等审计字段）。
  */
 @Data
 public class OrderDTO {

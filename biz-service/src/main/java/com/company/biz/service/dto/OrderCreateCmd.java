@@ -1,5 +1,6 @@
 package com.company.biz.service.dto;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +26,7 @@ public class OrderCreateCmd {
     private Integer quantity;
 
     @NotNull(message = "金额不能为空")
-    @Min(value = 0, message = "金额不能为负")
+    @DecimalMin(value = "0", message = "金额不能为负")
     private BigDecimal amount;
 
     private String buyerName;

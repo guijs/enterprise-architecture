@@ -1,12 +1,12 @@
-package com.company.biz.service.exception;
+package com.company.common.exception;
 
-import com.company.common.exception.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 /**
  * 订单业务错误码（1xxxx）。message 支持 {key} 命名占位。
+ * 共享错误码，biz-web 和 biz-service 均可引用。
  */
 @Getter
 @AllArgsConstructor

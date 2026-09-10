@@ -1,1 +1,4 @@
+com.company.redis.RedissonConfig
 com.company.redis.RedisAutoConfiguration
+com.company.lock.LockAutoConfiguration
+com.company.ratelimit.RateLimitAutoConfiguration

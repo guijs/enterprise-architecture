@@ -40,7 +40,6 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>

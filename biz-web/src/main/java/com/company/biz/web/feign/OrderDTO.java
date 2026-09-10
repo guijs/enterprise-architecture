@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 
 /**
  * 跨服务传输对象（biz-service 内部接口返回）。
+ * 与 biz-service OrderDTO 同构，避免 Entity 泄露至调用方。
  */
 @Data
 public class OrderDTO {
@@ -15,5 +16,7 @@ public class OrderDTO {
     private Long skuId;
     private Integer quantity;
     private BigDecimal amount;
-    private Integer status;
+    /** OrderStatus enum name (e.g. "PENDING", "PAID", "CLOSED", "REFUNDED") */
+    private String status;
+    private String buyerName;
 }

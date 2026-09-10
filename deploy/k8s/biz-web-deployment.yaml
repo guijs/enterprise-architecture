@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: biz-web
+  labels:
+    app: biz-web
+    tier: web
 spec:
   replicas: 3
   selector:
@@ -16,6 +19,7 @@ spec:
     metadata:
       labels:
         app: biz-web
+        tier: web
     spec:
       containers:
         - name: biz-web
@@ -30,6 +34,11 @@ spec:
                 secretKeyRef:
                   name: biz-secret
                   key: jasypt
+            - name: INTERNAL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: biz-secret
+                  key: internal-token
           resources:
             requests:
               cpu: "500m"
@@ -54,3 +63,18 @@ spec:
               exec:
                 command: ["sh", "-c", "sleep 15"]   # 见 6.17 摘流
       terminationGracePeriodSeconds: 60
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: biz-web
+  labels:
+    app: biz-web
+spec:
+  type: ClusterIP
+  selector:
+    app: biz-web
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP

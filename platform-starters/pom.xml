@@ -27,8 +27,6 @@
         <module>my-web-starter</module>
         <module>my-log-starter</module>
         <module>my-crypto-starter</module>
-        <module>my-lock-starter</module>
-        <module>my-ratelimit-starter</module>
         <module>my-idempotent-starter</module>
         <module>my-id-starter</module>
         <module>my-rabbit-starter</module>

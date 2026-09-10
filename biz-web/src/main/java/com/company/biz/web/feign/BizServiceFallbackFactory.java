@@ -2,6 +2,7 @@ package com.company.biz.web.feign;
 
 import com.company.common.exception.BizException;
 import com.company.common.exception.CommonErrorCode;
+import com.company.common.response.Result;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -15,14 +16,24 @@ public class BizServiceFallbackFactory implements FallbackFactory<BizServiceFeig
 
     @Override
     public BizServiceFeignClient create(Throwable cause) {
-        if (cause instanceof BizException bizEx) {
-            return id -> {
-                throw bizEx;
-            };
-        }
-        return id -> {
-            log.error("Feign 基础设施降级，orderId={}", id, cause);
-            throw new BizException(CommonErrorCode.SERVICE_UNAVAILABLE);
+        return new BizServiceFeignClient() {
+            @Override
+            public Result<OrderDTO> getOrder(Long id) {
+                return handleFallback(cause, "getOrder", id);
+            }
+
+            @Override
+            public Result<Long> createOrder(OrderCreateDTO order) {
+                return handleFallback(cause, "createOrder", order.getOrderNo());
+            }
+
+            private <T> Result<T> handleFallback(Throwable cause, String method, Object arg) {
+                if (cause instanceof BizException bizEx) {
+                    throw bizEx;
+                }
+                log.error("Feign 基础设施降级，method={}, arg={}", method, arg, cause);
+                throw new BizException(CommonErrorCode.SERVICE_UNAVAILABLE);
+            }
         };
     }
 }

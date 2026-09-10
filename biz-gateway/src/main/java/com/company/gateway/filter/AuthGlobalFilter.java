@@ -1,6 +1,7 @@
 package com.company.gateway.filter;
 
 import cn.hutool.core.util.StrUtil;
+import com.company.gateway.config.AuthWhitelistProperties;
 import com.company.gateway.model.UserInfo;
 import com.company.gateway.service.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -16,25 +17,28 @@ import reactor.core.publisher.Mono;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.UUID;
 
 /**
  * 全局鉴权过滤器：白名单放行；其余校验 Token 并注入下游用户 Header。
- * 安全要点：注入前先剥离客户端可能伪造的同名 Header；下游需内网隔离，不可被外部直接访问。
+ * 
+ * 安全要点：
+ * - 注入前先剥离客户端可能伪造的同名 Header；下游需内网隔离，不可被外部直接访问
+ * - 白名单通过配置文件管理：生产环境禁止包含 Swagger 路径；本地/开发环境可启用
+ * 
+ * @see AuthWhitelistProperties
  */
 @Component
 @RequiredArgsConstructor
 public class AuthGlobalFilter implements GlobalFilter, Ordered {
 
-    private static final List<String> WHITE_LIST = List.of("/auth/login", "/auth/refresh");
-
+    private final AuthWhitelistProperties whitelistProperties;
     private final TokenService tokenService;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
-        if (WHITE_LIST.stream().anyMatch(path::startsWith)) {
+        if (whitelistProperties.whitelist().stream().anyMatch(path::startsWith)) {
             return chain.filter(exchange);
         }
 

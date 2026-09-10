@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: biz-gateway
+  labels:
+    app: biz-gateway
+    tier: gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: biz-gateway
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: biz-gateway
+        tier: gateway
+    spec:
+      containers:
+        - name: biz-gateway
+          image: registry.company.com/biz-gateway:1.0.0
+          ports:
+            - containerPort: 9000
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: biz-secret
+                  key: jwt-secret
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 9000
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 9000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 10"]
+      terminationGracePeriodSeconds: 45
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: biz-gateway
+  labels:
+    app: biz-gateway
+spec:
+  type: ClusterIP
+  selector:
+    app: biz-gateway
+  ports:
+    - port: 9000
+      targetPort: 9000
+      protocol: TCP

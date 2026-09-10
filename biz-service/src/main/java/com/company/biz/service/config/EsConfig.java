@@ -7,13 +7,16 @@ import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * Elasticsearch Java Client（8.x）装配。统一使用官方 client，禁止 TransportClient / RestHighLevelClient。
+ * 可通过 es.enabled=false 禁用（本地冒烟测试不需要 ES）。
  */
 @Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(prefix = "es", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class EsConfig {
 
     @Value("${es.host:localhost}")

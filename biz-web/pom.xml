@@ -31,14 +31,6 @@
         </dependency>
         <dependency>
             <groupId>com.company</groupId>
-            <artifactId>my-lock-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.company</groupId>
-            <artifactId>my-ratelimit-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.company</groupId>
             <artifactId>my-idempotent-starter</artifactId>
         </dependency>
         <dependency>
@@ -48,8 +40,8 @@
 
         <!-- API 文档（Swagger 注解 + Knife4j UI），my-web-starter 中为 optional，故此处显式声明 -->
         <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+            <groupId>com.baizhukui</groupId>
+            <artifactId>knife4j-openapi3-boot4-spring-boot-starter</artifactId>
         </dependency>
 
         <!-- 微服务基础设施 -->

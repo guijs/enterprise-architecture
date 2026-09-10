@@ -19,6 +19,10 @@
         <!-- 内部 Starter（对应 5. Starter 与引入方关系） -->
         <dependency>
             <groupId>com.company</groupId>
+            <artifactId>my-web-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.company</groupId>
             <artifactId>my-mybatis-starter</artifactId>
         </dependency>
         <dependency>
@@ -39,10 +43,6 @@
         </dependency>
         <dependency>
             <groupId>com.company</groupId>
-            <artifactId>my-lock-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.company</groupId>
             <artifactId>my-log-starter</artifactId>
         </dependency>
 
@@ -53,6 +53,10 @@
         </dependency>
 
         <!-- 数据层 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>

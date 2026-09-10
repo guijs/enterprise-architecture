@@ -10,6 +10,7 @@ import com.company.security.UserContext;
 import com.company.security.UserInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,7 +18,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.ParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 import java.lang.reflect.Method;
@@ -27,12 +28,13 @@ import java.util.Optional;
 /**
  * 操作审计切面：环绕 @OperationLog，记录结果/耗时后异步落库。
  */
+@Slf4j
 @Aspect
 @RequiredArgsConstructor
 public class OperationLogAspect {
 
     private final OperationLogService operationLogService;
-    private final ExpressionParser parser = new SpelExpressionParser();
+    private final SpelExpressionParser parser = new SpelExpressionParser();
     private final DefaultParameterNameDiscoverer nameDiscoverer = new DefaultParameterNameDiscoverer();
 
     @Around("@annotation(operationLog)")
@@ -51,9 +53,13 @@ public class OperationLogAspect {
             entity.setErrorMsg(StrUtil.sub(t.getMessage(), 0, 500));
             throw t;
         } finally {
-            entity.setCostMs(System.currentTimeMillis() - start);
-            entity.setContent(resolveSpel(pjp, operationLog.content()));
-            operationLogService.saveAsync(entity);
+            try {
+                entity.setCostMs(System.currentTimeMillis() - start);
+                entity.setContent(resolveSpel(pjp, operationLog.content()));
+                operationLogService.saveAsync(entity);
+            } catch (Exception e) {
+                log.warn("OperationLog finally block error: {}", e.getMessage());
+            }
         }
     }
 
@@ -86,9 +92,16 @@ public class OperationLogAspect {
         if (StrUtil.isBlank(expr)) {
             return "";
         }
-        MethodSignature sig = (MethodSignature) pjp.getSignature();
-        Method method = sig.getMethod();
-        EvaluationContext ctx = new MethodBasedEvaluationContext(null, method, pjp.getArgs(), nameDiscoverer);
-        return Optional.ofNullable(parser.parseExpression(expr).getValue(ctx, String.class)).orElse(expr);
+        try {
+            MethodSignature sig = (MethodSignature) pjp.getSignature();
+            Method method = sig.getMethod();
+            EvaluationContext ctx = new MethodBasedEvaluationContext(null, method, pjp.getArgs(), nameDiscoverer);
+            return Optional.ofNullable(
+                    parser.parseExpression(expr, ParserContext.TEMPLATE_EXPRESSION).getValue(ctx, String.class)
+            ).orElse(expr);
+        } catch (Exception e) {
+            log.warn("SpEL parse error for '{}': {}", expr, e.getMessage());
+            return expr;
+        }
     }
 }

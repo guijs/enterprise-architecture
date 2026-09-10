@@ -234,17 +234,13 @@ company-platform/
 
 │   ├── my-crypto-starter             # 数据库字段加解密
 
-│   ├── my-lock-starter               # 分布式锁
-
-│   ├── my-ratelimit-starter          # 接口限流
-
 │   ├── my-idempotent-starter         # 接口幂等
 
 │   ├── my-id-starter                 # 分布式 ID
 
 │   ├── my-rabbit-starter             # RabbitMQ 可靠性
 
-│   ├── my-redis-starter              # Redis 规范化封装
+│   ├── my-redis-starter              # Redis 规范化封装 + 分布式锁 + 限流
 
 │   └── my-mybatis-starter            # MyBatis-Plus 配置
 
@@ -330,7 +326,7 @@ biz-web/
 
 | 模块独有       | 子模块 POM（无需写版本）                     | Mapper、ES Client  |
 
-| 内部 Starter | 父 POM `<dependencyManagement>` 锁版本 | my-lock-starter   |
+| 内部 Starter | 父 POM `<dependencyManagement>` 锁版本 | my-redis-starter  |
 
 ### 关键注意
 
@@ -356,17 +352,13 @@ biz-web/
 
 | `my-crypto-starter`     | 字段加解密工具、MyBatis TypeHandler、密钥配置                                                      | biz-service           |
 
-| `my-lock-starter`       | Redisson 配置`@DistributedLock` AOP`LockTemplate`                                     | biz-web / biz-service |
-
-| `my-ratelimit-starter`  | Redis 滑动窗口`@RateLimit` AOP                                                           | biz-web               |
-
 | `my-idempotent-starter` | Redis 幂等`@Idempotent` AOP                                                            | biz-web               |
 
 | `my-id-starter`         | Snowflake + Redis WorkerId 分配`IdHelper`、MyBatis-Plus 集成                              | biz-service           |
 
 | `my-rabbit-starter`     | Publisher Confirm、死信队列、手动 ACK 规范                                                      | biz-service           |
 
-| `my-redis-starter`      | Redis 序列化、key 命名规范、Redisson Client                                                    | biz-web / biz-service |
+| `my-redis-starter`      | Redis 序列化、key 命名规范、Redisson Client、`@DistributedLock` AOP、`LockTemplate`、`@RateLimit` 滑动窗口限流 | biz-web / biz-service |
 
 | `my-mybatis-starter`    | MyBatis-Plus 插件配置、自动填充、乐观锁、防全表更新                                                      | biz-service           |
 
@@ -1392,7 +1384,7 @@ springdoc:
 
 ---
 
-### 6.6 分布式锁（my-lock-starter）
+### 6.6 分布式锁（my-redis-starter）
 
 #### 注解定义
 
@@ -1630,7 +1622,7 @@ lockTemplate.execute("stock:deduct:" + skuId, () -> {
 
 ---
 
-### 6.7 接口限流（my-ratelimit-starter）
+### 6.7 接口限流（my-redis-starter）
 
 基于 Redis 滑动窗口，防止接口被高频打爆。
 
@@ -5979,10 +5971,6 @@ mybatis-plus:
 | my-log-starter        | —           | ?       | ?           |
 
 | my-crypto-starter     | —           | —       | ?           |
-
-| my-lock-starter       | —           | ?       | ?           |
-
-| my-ratelimit-starter  | —           | ?       | —           |
 
 | my-idempotent-starter | —           | ?       | —           |
 

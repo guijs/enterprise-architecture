@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.stream.Collectors;
+
 /**
  * 内部接口：仅供网关后的其它服务经 Feign 调用，需内网隔离，不可被外部直接访问。
+ * 返回 DTO 而非 Entity，符合 PR #6 契约。
  */
 @RestController
 @RequestMapping("/internal/order")
@@ -25,8 +28,8 @@ public class OrderInternalController {
     private final OrderService orderService;
 
     @GetMapping("/{id}")
-    public Result<OrderEntity> getOrder(@PathVariable Long id) {
-        return Result.ok(orderService.getById(id));
+    public Result<OrderDTO> getOrder(@PathVariable Long id) {
+        return Result.ok(toDTO(orderService.getById(id)));
     }
 
     @PostMapping
@@ -40,7 +43,27 @@ public class OrderInternalController {
     }
 
     @GetMapping
-    public Result<PageResult<OrderEntity>> page(@Valid PageQuery query) {
-        return Result.ok(orderService.page(query));
+    public Result<PageResult<OrderDTO>> page(@Valid PageQuery query) {
+        PageResult<OrderEntity> entityPage = orderService.page(query);
+        PageResult<OrderDTO> dtoPage = new PageResult<>(
+                entityPage.getRecords().stream().map(this::toDTO).collect(Collectors.toList()),
+                entityPage.getTotal(),
+                entityPage.getPageNum(),
+                entityPage.getPageSize()
+        );
+        return Result.ok(dtoPage);
+    }
+
+    private OrderDTO toDTO(OrderEntity entity) {
+        OrderDTO dto = new OrderDTO();
+        dto.setId(entity.getId());
+        dto.setOrderNo(entity.getOrderNo());
+        dto.setSkuId(entity.getSkuId());
+        dto.setQuantity(entity.getQuantity());
+        dto.setAmount(entity.getAmount());
+        dto.setStatus(entity.getStatus() != null ? entity.getStatus().getCode() : null);
+        dto.setBuyerId(entity.getBuyerId());
+        dto.setBuyerName(entity.getBuyerName());
+        return dto;
     }
 }

@@ -14,7 +14,6 @@ public enum OrderErrorCode implements ErrorCode {
 
     STOCK_NOT_ENOUGH(10001, "商品{skuId}库存不足，当前可用{available}，需要{required}", HttpStatus.CONFLICT),
     ORDER_NOT_FOUND(10004, "订单不存在", HttpStatus.NOT_FOUND),
-    ORDER_ACCESS_DENIED(10005, "无权访问此订单", HttpStatus.FORBIDDEN),
     ORDER_STATUS_INVALID(10009, "订单状态不允许此操作，当前状态={status}", HttpStatus.UNPROCESSABLE_ENTITY);
 
     private final int code;

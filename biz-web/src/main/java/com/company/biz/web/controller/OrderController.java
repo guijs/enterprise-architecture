@@ -6,7 +6,6 @@ import com.company.biz.web.feign.OrderCreateCmd;
 import com.company.biz.web.feign.OrderDTO;
 import com.company.biz.web.feign.OrderPageQuery;
 import com.company.biz.web.vo.OrderVO;
-import com.company.common.exception.BizException;
 import com.company.common.page.PageQuery;
 import com.company.common.page.PageResult;
 import com.company.common.response.Result;
@@ -33,6 +32,7 @@ import java.util.stream.Collectors;
 /**
  * 订单接口示例：串联限流、幂等、审计、接口日志与 Feign 调用。
  * 归属校验：所有订单操作基于当前登录用户的 X-User-Id 进行归属校验。
+ * 业务异常由 Feign ErrorDecoder 还原为 BizException，无需在此处理 Result.isSuccess()。
  */
 @RestController
 @RequestMapping("/orders")
@@ -46,11 +46,7 @@ public class OrderController {
     @GetMapping("/{id}")
     @Operation(summary = "订单详情")
     public Result<OrderDTO> detail(@PathVariable Long id) {
-        Result<OrderDTO> result = bizServiceFeignClient.getOrder(id);
-        if (result == null || !result.isSuccess()) {
-            throw new BizException(com.company.common.exception.CommonErrorCode.SYSTEM_ERROR);
-        }
-        return result;
+        return bizServiceFeignClient.getOrder(id);
     }
 
     @PostMapping
@@ -65,12 +61,7 @@ public class OrderController {
         cmd.setQuantity(req.getQuantity());
         cmd.setOrderNo(req.getOrderNo());
         cmd.setAmount(BigDecimal.valueOf(req.getQuantity()).multiply(BigDecimal.valueOf(100)));
-
-        Result<Long> result = bizServiceFeignClient.createOrder(cmd);
-        if (result == null || !result.isSuccess()) {
-            throw new BizException(com.company.common.exception.CommonErrorCode.SYSTEM_ERROR);
-        }
-        return result;
+        return bizServiceFeignClient.createOrder(cmd);
     }
 
     @GetMapping
@@ -83,10 +74,6 @@ public class OrderController {
         pageQuery.setOrderDir(query.getOrderDir());
 
         Result<PageResult<OrderDTO>> result = bizServiceFeignClient.pageOrders(pageQuery);
-        if (result == null || !result.isSuccess()) {
-            throw new BizException(com.company.common.exception.CommonErrorCode.SYSTEM_ERROR);
-        }
-
         PageResult<OrderDTO> dtoPage = result.getData();
         PageResult<OrderVO> voPage = new PageResult<>(
                 dtoPage.getRecords().stream().map(this::toVO).collect(Collectors.toList()),

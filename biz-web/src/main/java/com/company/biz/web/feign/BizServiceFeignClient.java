@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignLog(response = LogSwitch.ON)
 public interface BizServiceFeignClient {
 
-    @GetMapping("/internal/order/{id}")
+    @GetMapping("/api/internal/order/{id}")
     Result<OrderDTO> getOrder(@PathVariable Long id);
 
-    @PostMapping("/internal/order")
+    @PostMapping("/api/internal/order")
     Result<Long> createOrder(@RequestBody OrderCreateCmd cmd);
 
-    @GetMapping("/internal/order")
+    @GetMapping("/api/internal/order")
     Result<PageResult<OrderDTO>> pageOrders(@SpringQueryMap OrderPageQuery query);
 }

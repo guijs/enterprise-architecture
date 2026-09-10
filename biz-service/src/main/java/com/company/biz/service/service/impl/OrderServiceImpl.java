@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         if (!currentUserId.equals(entity.getBuyerId())) {
-            throw new BizException(OrderErrorCode.ORDER_ACCESS_DENIED);
+            throw new BizException(OrderErrorCode.ORDER_NOT_FOUND);
         }
 
         return entity;

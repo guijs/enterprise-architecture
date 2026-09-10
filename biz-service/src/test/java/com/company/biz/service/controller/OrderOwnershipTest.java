@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 订单归属校验测试：验证 Architect Item 3 的所有权限场景。
  * 测试场景：
  * 1. 订单所有者可以读取自己的订单
- * 2. 非所有者访问他人订单返回 FORBIDDEN (403)
+ * 2. 非所有者访问他人订单返回 NOT_FOUND（避免泄露资源是否存在）
  * 3. 未认证用户访问返回 UNAUTHORIZED (401)
  */
 @SpringBootTest
@@ -73,15 +73,15 @@ class OrderOwnershipTest {
     }
 
     @Test
-    @DisplayName("非所有者访问他人订单返回 FORBIDDEN")
+    @DisplayName("非所有者访问他人订单返回 NOT_FOUND（避免泄露资源存在）")
     void nonOwnerCannotReadOthersOrder() throws Exception {
         mockMvc.perform(get("/internal/order/{id}", testOrderId)
                         .header(UserInterceptor.HEADER_USER_ID, OTHER_USER_ID.toString())
                         .header(UserInterceptor.HEADER_USER_NAME, "other")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.code").value(10005));
+                .andExpect(jsonPath("$.code").value(10004));
     }
 
     @Test

@@ -21,16 +21,13 @@ spec:
     - Ingress
     - Egress
   ingress:
-    # Allow traffic from Ingress controller (typically labeled ingress-nginx or similar)
+    # Allow traffic ONLY from Ingress controller namespace
+    # Kubelet health checks bypass NetworkPolicy (node-level, not pod-to-pod)
     - from:
         - namespaceSelector:
             matchLabels:
               name: ingress-nginx
-        - podSelector:
-            matchLabels:
-              app.kubernetes.io/name: ingress-nginx
-    # Allow health checks from kubelet
-    - ports:
+      ports:
         - port: 9000
           protocol: TCP
   egress:

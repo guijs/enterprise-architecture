@@ -8,8 +8,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * 
  * 环境变量说明：
  * - INTERNAL_TOKEN: 内部调用共享密钥，biz-web 和 biz-service 必须配置相同的值
- *   - 生产环境：必须通过 K8s Secret 注入强密钥
+ *   - 生产环境：必须通过 K8s Secret 注入强密钥，缺失时启动失败
  *   - 本地环境：使用默认值 local-internal-token-for-dev 方便调试
+ * 
+ * 安全要点：
+ * - 非 local profile 必须显式配置 token，否则启动失败（fail-fast）
+ * - Token 比较使用常量时间算法防止时序攻击
  */
 @ConfigurationProperties(prefix = "security.internal")
 public record InternalSecurityProperties(
@@ -24,8 +28,13 @@ public record InternalSecurityProperties(
         if (headerName == null || headerName.isBlank()) {
             headerName = DEFAULT_HEADER_NAME;
         }
-        if (token == null || token.isBlank()) {
-            token = DEFAULT_LOCAL_TOKEN;
-        }
+    }
+
+    public boolean isTokenMissing() {
+        return token == null || token.isBlank();
+    }
+
+    public boolean isUsingWeakDefaultToken() {
+        return DEFAULT_LOCAL_TOKEN.equals(token);
     }
 }

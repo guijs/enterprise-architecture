@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+
 /**
  * 内部接口安全拦截器：拦截 /internal/** 路径，验证 X-Internal-Token header。
  * 
@@ -13,15 +16,19 @@ import org.springframework.web.servlet.HandlerInterceptor;
  * - 仅供内部服务（如 biz-web）通过 Feign 调用，不可被外部直接访问
  * - 必须配合 K8s NetworkPolicy 实现双重防护
  * - 没有有效 token 的请求返回 403 Forbidden
+ * - Token 比较使用常量时间算法（MessageDigest.isEqual）防止时序攻击
  */
 public class InternalTokenInterceptor implements HandlerInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(InternalTokenInterceptor.class);
 
     private final InternalSecurityProperties properties;
+    private final byte[] expectedTokenBytes;
 
     public InternalTokenInterceptor(InternalSecurityProperties properties) {
         this.properties = properties;
+        String token = properties.token();
+        this.expectedTokenBytes = (token != null) ? token.getBytes(StandardCharsets.UTF_8) : new byte[0];
     }
 
     @Override
@@ -43,7 +50,7 @@ public class InternalTokenInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        if (!properties.token().equals(token)) {
+        if (!constantTimeEquals(token)) {
             log.warn("Internal endpoint access denied: invalid {} header, path={}, remoteAddr={}",
                     properties.headerName(), path, request.getRemoteAddr());
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -53,6 +60,15 @@ public class InternalTokenInterceptor implements HandlerInterceptor {
         }
 
         return true;
+    }
+
+    /**
+     * 常量时间比较：使用 MessageDigest.isEqual 防止时序攻击。
+     * 无论 token 是否匹配，比较时间都相同，防止攻击者通过响应时间推断 token。
+     */
+    private boolean constantTimeEquals(String providedToken) {
+        byte[] providedBytes = providedToken.getBytes(StandardCharsets.UTF_8);
+        return MessageDigest.isEqual(expectedTokenBytes, providedBytes);
     }
 
     private boolean isInternalPath(String path) {

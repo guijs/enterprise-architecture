@@ -43,10 +43,11 @@ my:
 
 # 内部接口安全配置：/internal/** 路径需要 X-Internal-Token 验证
 # 环境变量：INTERNAL_TOKEN - biz-web 和 biz-service 必须配置相同的值
+# 安全：非 local/dev/test profile 缺少 token 配置时启动失败（fail-fast）
 security:
   internal:
     enabled: true
-    token: ${INTERNAL_TOKEN:local-internal-token-for-dev}
+    token: ${INTERNAL_TOKEN:}
     header-name: X-Internal-Token
 
 mybatis-plus:

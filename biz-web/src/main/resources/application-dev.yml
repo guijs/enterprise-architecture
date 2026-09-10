@@ -25,3 +25,8 @@ spring:
 
 springdoc:
   enabled: true
+
+# 开发环境：使用固定的内部 token 方便调试（生产必须通过 INTERNAL_TOKEN 环境变量配置）
+security:
+  internal:
+    token: local-internal-token-for-dev

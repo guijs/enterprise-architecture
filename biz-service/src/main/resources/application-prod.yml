@@ -28,3 +28,10 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+
+# 生产环境禁用 API 文档
+springdoc:
+  enabled: false
+
+knife4j:
+  enable: false

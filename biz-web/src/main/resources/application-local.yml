@@ -42,3 +42,8 @@ biz:
 
 springdoc:
   enabled: true
+
+# 本地开发：使用固定的内部 token 方便调试
+security:
+  internal:
+    token: local-internal-token-for-dev

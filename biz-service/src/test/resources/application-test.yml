@@ -26,9 +26,10 @@ my:
     algorithm: AES_GCM
     secret-key: 0123456789abcdef0123456789abcdef
     hash-salt: test-salt
-  security:
-    internal:
-      enabled: false
+
+security:
+  internal:
+    enabled: false
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
